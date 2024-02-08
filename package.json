@@ -1,0 +1,22 @@
+{
+  "name": "crud-api-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Andrei Babich",
+  "license": "ISC",
+  "scripts": {
+    "clean": "rm dist/bundle.js",
+    "dev": "webpack --mode development",
+    "prod": "webpack --mode production"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "webpack": "^5.90.1",
+    "webpack-cli": "^5.1.4",
+    "typescript": "^5.3.3",
+    "ts-loader": "^9.5.1",
+    "prettier": "^3.2.5"
+  }
+}
