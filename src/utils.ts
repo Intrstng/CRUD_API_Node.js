@@ -1,5 +1,6 @@
 import { IncomingMessage } from 'http';
 
+
 function getReqData(req: IncomingMessage): Promise<object> {
     return new Promise((resolve, reject) => {
         try {
@@ -17,5 +18,6 @@ function getReqData(req: IncomingMessage): Promise<object> {
         }
     })
 }
+
 
 module.exports = { getReqData };
