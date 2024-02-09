@@ -51,3 +51,11 @@ export class UserNotFoundError extends Error {
         this.message = `${this.description} ${id}`;
     }
 }
+
+export class UncorrectPropertiesError extends Error {
+    description: string = `Check these object properties for correctness:`;
+    constructor(errMsg: string) {
+        super(errMsg);
+        this.message = `${this.description}${errMsg}`;
+    }
+}

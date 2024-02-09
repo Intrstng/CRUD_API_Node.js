@@ -2,7 +2,7 @@ import { createServer, ServerResponse, IncomingMessage } from 'http';
 const Controller = require('./controller');
 const { getReqData } = require('./utils');
 import { validate } from 'uuid';
-import {Error400, StatusCode, Error404} from './errors';
+import { Error400, StatusCode, Error404 } from './errors';
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -11,6 +11,7 @@ const PORT = parseInt(process.env.PORT || '5000');
 interface UserNotFoundError {
     message: string;
 }
+
 
 // Create a local server to receive data from
 const server = createServer(async(req: IncomingMessage, res: ServerResponse) => {
@@ -26,7 +27,7 @@ const server = createServer(async(req: IncomingMessage, res: ServerResponse) => 
             const id = req.url.split('/')[3];
             if (!validate(id)) {
                 res.writeHead(StatusCode.BadRequest, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify(new Error400('Invalid user id.').message));
+                res.end(JSON.stringify({ message: new Error400('Invalid user id.').message }));
                 return;
             }
 
@@ -40,7 +41,7 @@ const server = createServer(async(req: IncomingMessage, res: ServerResponse) => 
             res.end(JSON.stringify(user));
         } catch (user) {
             res.writeHead(StatusCode.NotFound, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify((user as Error).message));
+            res.end(JSON.stringify({ message: (user as Error).message }));
         }
     }
 
@@ -59,13 +60,29 @@ const server = createServer(async(req: IncomingMessage, res: ServerResponse) => 
             //res.end(JSON.stringify(actionDelete));
         } catch (actionDelete) {
             res.writeHead(StatusCode.NotFound, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify((actionDelete as Error).message));
+            res.end(JSON.stringify({ message: (actionDelete as Error).message }));
         }
     }
+    // POST - /api/users/
+    else if (req.url === '/api/users' && req.method  === 'POST') {
+        try {
+           const newTodoData = await getReqData(req);
+           let newTodo = await new Controller().createUser(newTodoData);
+           res.writeHead(StatusCode.Created, { 'Content-Type': 'application/json' });
+           res.end(JSON.stringify(newTodo));
+        } catch (error) {
+            res.writeHead(StatusCode.BadRequest, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: (error as Error).message }));
+        }
+    }
+
+
+
+
     // No route present
     else {
         res.writeHead(StatusCode.NotFound, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(new Error404('Route not found.').message));
+        res.end(JSON.stringify({ message: new Error404('Route not found.').message }));
     }
 });
 

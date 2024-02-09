@@ -1,6 +1,7 @@
-import {UserNotFoundError} from './errors';
-import {UserDataType, UserType} from './data';
+import {UncorrectPropertiesError, UserNotFoundError} from './errors';
+import {NewUserType, UserDataType, UserType} from './data';
 import { v4 } from 'uuid';
+const { newUserPropertiesValidation } = require('./utils');
 
 let data = require('./data');
 
@@ -28,6 +29,19 @@ class Controller {
             resolve();
             //resolve(`User with ${id} deleted successfully`);
         });
+    }
+    async createUser(user: NewUserType): Promise<UserType> {
+        try {
+            newUserPropertiesValidation(user);
+            let newUser: UserType = {
+                id: v4(),
+                ...user
+            }
+            data = [...data, newUser];
+            return newUser;
+        } catch (error) {
+            throw error;
+        }
     }
 }
 

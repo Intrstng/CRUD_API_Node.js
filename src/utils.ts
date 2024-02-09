@@ -1,7 +1,9 @@
 import { IncomingMessage } from 'http';
+import {NewUserType} from './data';
+import {UncorrectPropertiesError} from './errors';
 
 
-function getReqData(req: IncomingMessage): Promise<object> {
+function getReqData(req: IncomingMessage): Promise<NewUserType> {
     return new Promise((resolve, reject) => {
         try {
             let body: string = '';
@@ -19,5 +21,31 @@ function getReqData(req: IncomingMessage): Promise<object> {
     })
 }
 
+const newUserPropertiesValidation = (user: Partial<NewUserType>) => {
+    let errorMessage: string = '';
+    (!user.username || typeof user.username !== 'string')
+    && (errorMessage += ' username');
 
-module.exports = { getReqData };
+    (!user.age || typeof user.age !== 'number' || user.age < 0)
+    && (errorMessage += ' age');
+
+    (!user.hobbies || !Array.isArray(user.hobbies)
+    || !user.hobbies.every((hobby) => typeof hobby === 'string'))
+    && (errorMessage += ' hobbies');
+
+    if (errorMessage.length > 0) {
+        throw new UncorrectPropertiesError(errorMessage);
+    }
+};
+
+
+function isJSON(str: any) {
+    try {
+        JSON.parse(str);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+module.exports = { getReqData, newUserPropertiesValidation };

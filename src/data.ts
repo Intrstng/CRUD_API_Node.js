@@ -27,12 +27,12 @@ let userData: UserDataType = [
         "age": 3,
         "hobbies": ["reading", "cooking"],
     },
-    {
-        "id": "123e4567-e89b-12d3-a456-426614176000",
-        "username": "Tuffy",
-        "age": 1,
-        "hobbies": ["singing", "dancing"],
-    }
+    // {
+    //     "id": "123e4567-e89b-12d3-a456-426614176000",
+    //     "username": "Tuffy",
+    //     "age": 1,
+    //     "hobbies": ["singing", "dancing"],
+    // }
 ]
 
 module.exports = userData;
