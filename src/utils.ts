@@ -1,4 +1,4 @@
-import { createServer, ServerResponse, IncomingMessage } from 'http';
+import { IncomingMessage } from 'http';
 
 function getReqData(req: IncomingMessage): Promise<object> {
     return new Promise((resolve, reject) => {

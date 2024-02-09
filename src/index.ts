@@ -9,9 +9,9 @@ const PORT = parseInt(process.env.PORT || '5000');
 const server = createServer(async(req: IncomingMessage, res: ServerResponse) => {
     // GET - /api/users
     if (req.url === '/api/users' && req.method  === 'GET') {
-        const todos = await new Controller().getUsers();
+        const users = await new Controller().getUsers();
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(todos));
+        res.end(JSON.stringify(users));
     }
 
     // No route present
@@ -25,9 +25,4 @@ server.on('error', (error: Error) => {
     console.log(`The server suddenly stopped working: ${(error as Error).message}`);
 });
 
-server.listen(PORT, () => console.log(`Server is on: ${PORT}`));
-
-
-
-
-
+server.listen(PORT, () => console.log(`Server listening on port: ${PORT}`));

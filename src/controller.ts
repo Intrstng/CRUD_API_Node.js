@@ -1,8 +1,3 @@
-import {UserType} from './data';
-import { v1 } from 'uuid';
-
-
-
 let data = require('./data');
 
 class Controller {
