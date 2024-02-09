@@ -46,8 +46,8 @@ export class InternalError extends Error {
 
 export class UserNotFoundError extends Error {
     description: string = `User with this ID not found:`;
-    constructor(message: string) {
-        super(message);
-        this.message = `${this.description} ${message}`;
+    constructor(id: string) {
+        super(id);
+        this.message = `${this.description} ${id}`;
     }
 }

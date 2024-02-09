@@ -43,6 +43,25 @@ const server = createServer(async(req: IncomingMessage, res: ServerResponse) => 
             res.end(JSON.stringify((user as Error).message));
         }
     }
+
+    // DELETE - /api/users/:id
+    else if (req.url && req.method === 'DELETE' && req.url.match(/\/api\/users\/([0-9a-fA-F-]+)/)) {
+        try {
+            const id = req.url.split('/')[3];
+            if (!validate(id)) {
+                res.writeHead(StatusCode.BadRequest, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(new Error400('Invalid user id.').message));
+                return;
+            }
+            const actionDelete = await new Controller().deleteUser(id);
+            res.writeHead(StatusCode.NoContent, { 'Content-Type': 'application/json' });
+            res.end();
+            //res.end(JSON.stringify(actionDelete));
+        } catch (actionDelete) {
+            res.writeHead(StatusCode.NotFound, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify((actionDelete as Error).message));
+        }
+    }
     // No route present
     else {
         res.writeHead(StatusCode.NotFound, { 'Content-Type': 'application/json' });
