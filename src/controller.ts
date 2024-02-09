@@ -43,6 +43,21 @@ class Controller {
             throw error;
         }
     }
+    async updateUser(id: any, userData: NewUserType): Promise<UserType> {
+        return new Promise((resolve, reject) => {
+            let user = data.find((u: UserType) => u.id === id);
+            if (!user) {
+                reject(new UserNotFoundError(id));
+            }
+            newUserPropertiesValidation(user);
+            const updatedUser = { id, ...userData };
+            data = data.map((el: UserType) => el.id === id ? updatedUser : el)
+
+            resolve(updatedUser);
+
+
+        });
+    }
 }
 
 module.exports = Controller;

@@ -18,10 +18,10 @@ export class HTTPError extends Error {
 
 export class Error400 extends HTTPError {
     code: StatusCode = StatusCode.BadRequest;
-    description: string = 'The request could not be understood by the server due to incorrect syntax. The client MUST change the request before trying again. DESCRIPTION:';
-    constructor(message: string) {
-        super(message);
-        this.message = `${this.description} ${message}`;
+    description: string = 'The request could not be understood by the server due to incorrect syntax. The client MUST change the request before trying again. DESCRIPTION: Invalid user id: ';
+    constructor(id: string) {
+        super(id);
+        this.message = `${this.description}${id}`;
     }
 }
 

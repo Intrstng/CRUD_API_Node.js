@@ -27,7 +27,7 @@ const server = createServer(async(req: IncomingMessage, res: ServerResponse) => 
             const id = req.url.split('/')[3];
             if (!validate(id)) {
                 res.writeHead(StatusCode.BadRequest, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: new Error400('Invalid user id.').message }));
+                res.end(JSON.stringify({ message: new Error400(id).message }));
                 return;
             }
 
@@ -51,7 +51,7 @@ const server = createServer(async(req: IncomingMessage, res: ServerResponse) => 
             const id = req.url.split('/')[3];
             if (!validate(id)) {
                 res.writeHead(StatusCode.BadRequest, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify(new Error400('Invalid user id.').message));
+                res.end(JSON.stringify(new Error400(id).message));
                 return;
             }
             const actionDelete = await new Controller().deleteUser(id);
@@ -66,23 +66,40 @@ const server = createServer(async(req: IncomingMessage, res: ServerResponse) => 
     // POST - /api/users/
     else if (req.url === '/api/users' && req.method  === 'POST') {
         try {
-           const newTodoData = await getReqData(req);
-           let newTodo = await new Controller().createUser(newTodoData);
+           const newUserData = await getReqData(req);
+           let newUser = await new Controller().createUser(newUserData);
            res.writeHead(StatusCode.Created, { 'Content-Type': 'application/json' });
-           res.end(JSON.stringify(newTodo));
+           res.end(JSON.stringify(newUser));
         } catch (error) {
             res.writeHead(StatusCode.BadRequest, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: (error as Error).message }));
+        }
+    }
+    // UPDATE - /api/users/:id
+    else if (req.url && req.method === 'PUT' && req.url.match(/\/api\/users\/([0-9a-fA-F-]+)/)) {
+        try {
+            const id = req.url.split('/')[3];
+            if (!validate(id)) {
+                res.writeHead(StatusCode.BadRequest, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(new Error400(id).message));
+                return;
+            }
+            const userUpdatedData = await getReqData(req);
+            const updatedUser = await new Controller().updateUser(id, userUpdatedData);
+            res.writeHead(StatusCode.OK, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(updatedUser));
+        } catch (error ) {
+            res.writeHead(StatusCode.NotFound, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: (error as Error).message }));
         }
     }
 
 
 
-
     // No route present
     else {
         res.writeHead(StatusCode.NotFound, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: new Error404('Route not found.').message }));
+        res.end(JSON.stringify({ message: new Error404(`Route not found: ${req.url}`).message }));
     }
 });
 
