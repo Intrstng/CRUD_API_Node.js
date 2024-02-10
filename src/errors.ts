@@ -27,10 +27,10 @@ export class Error400 extends HTTPError {
 
 export class Error404 extends HTTPError {
     code: StatusCode = StatusCode.NotFound;
-    description: string = 'The server can not find the requested resource. DESCRIPTION:';
+    description: string = 'The server can not find the requested resource. DESCRIPTION: ';
     constructor(message: string) {
         super(message);
-        this.message = `${this.description} ${message}`;
+        this.message = `${this.description}${message}`;
     }
 }
 
@@ -38,17 +38,17 @@ export class Error404 extends HTTPError {
 export class InternalError extends Error {
     code: StatusCode = StatusCode.InternalServerError;
     description: string = 'The server encountered an unexpected condition that prevented it from fulfilling the request. DESCRIPTION:';
-    constructor(message: string) {
+    constructor(message: string = 'Internal Server Error. CODE:') {
         super(message);
-        this.message = `${this.description} ${message}`;
+        this.message = `${this.description} ${this.message} ${this.code}`;
     }
 }
 
-export class UserNotFoundError extends Error {
-    description: string = `User with this ID not found:`;
+export class UserNotFoundError extends Error404 {
+    descriptionAdditional: string = `User with this ID not found:`;
     constructor(id: string) {
         super(id);
-        this.message = `${this.description} ${id}`;
+        this.message = `${this.description}${this.descriptionAdditional} ${id}`;
     }
 }
 

@@ -1,14 +1,8 @@
 export type UserType = {
-    id: string;
+    id?: string;
     username: string;
     age: number;
     hobbies: string[];
-};
-
-export type NewUserType = {
-    age: number
-    username: string
-    hobbies: string[]
 };
 
 export type UserDataType = UserType[];
@@ -26,13 +20,7 @@ let userData: UserDataType = [
         "username": "Jerry",
         "age": 3,
         "hobbies": ["reading", "cooking"],
-    },
-    // {
-    //     "id": "123e4567-e89b-12d3-a456-426614176000",
-    //     "username": "Tuffy",
-    //     "age": 1,
-    //     "hobbies": ["singing", "dancing"],
-    // }
+    }
 ]
 
 module.exports = userData;

@@ -1,9 +1,17 @@
 import { IncomingMessage } from 'http';
-import {NewUserType} from './data';
+//import {NewUserType} from './data';
 import {UncorrectPropertiesError} from './errors';
+import { ServerResponse } from 'http';
+import { validate } from 'uuid';
+import { Error400, StatusCode, Error404 } from './errors';
+import {UserType} from './data';
 
 
-function getReqData(req: IncomingMessage): Promise<NewUserType> {
+
+
+
+
+function getReqData(req: IncomingMessage): Promise<UserType> {
     return new Promise((resolve, reject) => {
         try {
             let body: string = '';
@@ -21,7 +29,7 @@ function getReqData(req: IncomingMessage): Promise<NewUserType> {
     })
 }
 
-const newUserPropertiesValidation = (user: Partial<NewUserType>) => {
+const newUserPropertiesValidation = (user: Partial<UserType>) => {
     let errorMessage: string = '';
     (!user.username || typeof user.username !== 'string')
     && (errorMessage += ' username');
@@ -48,4 +56,16 @@ function isJSON(str: any) {
     }
 }
 
-module.exports = { getReqData, newUserPropertiesValidation };
+
+
+function handleBadRequest(res: ServerResponse, id: string): void {
+    if (!validate(id)) {
+        res.writeHead(StatusCode.BadRequest, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(new Error400(id).message));
+        return;
+    }
+}
+
+
+
+module.exports = { getReqData, newUserPropertiesValidation, handleBadRequest };
