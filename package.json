@@ -13,6 +13,7 @@
 		"lint": "eslint --ignore-path .eslintignore --ext .js,.ts",
 		"format": "prettier --ignore-path .prettierignore --write \"**/*.+(js|ts|json)\"",
 		"test": "jest --silent",
+		"test:detectOpenHandle": "jest --detectOpenHandles",
 		"test:verbose": "jest --verbose"
 	},
 	"devDependencies": {

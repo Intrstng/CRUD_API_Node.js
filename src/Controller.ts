@@ -63,6 +63,7 @@ export class Controller implements IController {
             throw new UserNotFoundError(id);
         }
     }
+
     async deleteUserByID(id: string): Promise<void> {
         if (!validate(id)) {
             await this.handleBadRequestError(id);
@@ -76,8 +77,9 @@ export class Controller implements IController {
         this.res.writeHead(StatusCode.NoContent, { 'Content-Type': 'application/json' });
         this.res.end();
     }
+
     async createNewUser(): Promise<void> {
-        const newUserData = await getReqData(this.req);
+        const newUserData = await getReqData(this.req, this.res);
         try {
             newUserPropertiesValidation(newUserData);
             let newUser: UserType = {
@@ -91,12 +93,13 @@ export class Controller implements IController {
             throw error;
         }
     }
+
     async updateUserByID(id: string): Promise<void> {
         if (!validate(id)) {
             await this.handleBadRequestError(id);
             return;
         }
-        const userUpdatedData = await getReqData(this.req);
+        const userUpdatedData = await getReqData(this.req, this.res);
         let user: UserType | undefined = data.find((u: UserType) => u.id === id);
         if (!user) {
             throw new UserNotFoundError(id);

@@ -1,9 +1,9 @@
-import { IncomingMessage } from 'http';
-import { UncorrectPropertiesError } from '../errors';
+import {IncomingMessage, ServerResponse} from 'http';
+import {Error400, StatusCode, UncorrectPropertiesError} from '../errors';
 import { UserType } from '../data';
 
 
-export function getReqData(req: IncomingMessage): Promise<UserType> {
+export function getReqData(req: IncomingMessage, res: ServerResponse): Promise<UserType> {
     return new Promise((resolve, reject) => {
         try {
             let body: string = '';
@@ -12,11 +12,16 @@ export function getReqData(req: IncomingMessage): Promise<UserType> {
             })
 
             req.on('end', () => {
-                const requestBody = JSON.parse(body);
-                resolve(requestBody);
+                if (body) {
+                    const requestBody = JSON.parse(body);
+                    resolve(requestBody);
+                } else {
+                    res.writeHead(StatusCode.BadRequest, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: new Error400('Bad Request: body parsing error.').message }));
+                }
             })
         } catch (error) {
-            reject('body parsing error - ' + error);
+            reject('Body parsing error - ' + error);
         }
     })
 }
@@ -37,3 +42,26 @@ export function newUserPropertiesValidation(user: Partial<UserType>) {
         throw new UncorrectPropertiesError(errorMessage);
     }
 }
+
+
+// export function newUserPropertiesValidation(user: Partial<UserType>) {
+//     let errorMessage: string = '';
+//     if (user) {
+//         (!user.username || typeof user.username !== 'string')
+//         && (errorMessage += ' username');
+//
+//         (!user.age || typeof user.age !== 'number' || user.age < 0)
+//         && (errorMessage += ' age');
+//
+//         (!user.hobbies || !Array.isArray(user.hobbies)
+//             || !user.hobbies.every((hobby) => typeof hobby === 'string'))
+//         && (errorMessage += ' hobbies');
+//     } else {
+//         errorMessage = 'Request with empty body.';
+//     }
+//
+//
+//     if (errorMessage.length > 0) {
+//         throw new UncorrectPropertiesError(errorMessage);
+//     }
+// }

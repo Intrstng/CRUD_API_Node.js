@@ -23,6 +23,7 @@ export class Error400 extends HTTPError {
     constructor(value: string) {
         super(value);
             this.message = value.length === 66 ? `${this.description}${value}`
+                                               : value.length === 32 ? value
                                                : `${this.description}${this.descriptionAdditional_ID}${value}`;
     }
 }
@@ -47,6 +48,7 @@ export class InternalError extends Error {
 }
 
 export class UserNotFoundError extends Error404 {
+    code: StatusCode = StatusCode.NotFound;
     descriptionAdditional: string = `User with this ID not found:`;
     constructor(id: string) {
         super(id);
@@ -55,6 +57,7 @@ export class UserNotFoundError extends Error404 {
 }
 
 export class UncorrectPropertiesError extends Error {
+    code: StatusCode = StatusCode.BadRequest;
     description: string = `Check these object properties for correctness:`;
     constructor(errMsg: string) {
         super(errMsg);

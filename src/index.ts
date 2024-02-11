@@ -1,5 +1,5 @@
 import { createServer, ServerResponse, IncomingMessage, Server } from 'http';
-import { Error404, InternalError, StatusCode } from './errors';
+import {Error400, Error404, InternalError, StatusCode, UncorrectPropertiesError} from './errors';
 const Controller = require('./Controller');
 import dotenv from 'dotenv';
 
@@ -15,9 +15,7 @@ export function runServer(port: number) {
     server = createServer(async(req: IncomingMessage, res: ServerResponse) => {
         try {
             const apiInterface = new Controller(req, res);
-
             const isCurrentUser = req.url && req.url.match(/\/api\/users\/([0-9a-fA-F-]+)/);
-
             if (isCurrentUser) {
                 const id = req.url!.split('/')[3];
                 switch (req.method) {
@@ -42,13 +40,22 @@ export function runServer(port: number) {
                         try {
                             await apiInterface.updateUserByID(id);
                         } catch (error) {
-                            await apiInterface.handleNotFoundError(error);
+if ((error as UncorrectPropertiesError).code === StatusCode.BadRequest) {
+    res.writeHead(StatusCode.BadRequest, {'Content-Type': 'application/json'});
+    res.end(JSON.stringify({message: (error as Error).message}));
+} else if ((error as Error404).code === StatusCode.NotFound) {
+    res.writeHead(StatusCode.NotFound, {'Content-Type': 'application/json'});
+    res.end(JSON.stringify({message: (error as Error).message}));
+}
+// await apiInterface.handleNotFoundError(error);
+// res.writeHead(StatusCode.BadRequest, {'Content-Type': 'application/json'});
+// res.end(JSON.stringify({message: (error as Error).message}));
                         }
                         break;
                     default:
                         await apiInterface.handleBadRequestError('This API method is not available. Check API method or path in URL.');
                 }
-            } else if (req.url === '/api/users') {
+            } else if (req.url === '/api/users' || req.url === '/api/users/') {
                 switch (req.method) {
                     // GET - /api/users
                     case ('GET'):
