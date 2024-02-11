@@ -6,18 +6,18 @@ import { IController } from './data';
 import { getReqData, newUserPropertiesValidation } from './utils/utils';
 
 let data: UserDataType = [
-    {
-        "id": "71bd1176-0be0-4a02-b559-e5b661320470",
-        "username": "Tom",
-        "age": 5,
-        "hobbies": ["cycling", "fishing"],
-    },
-    {
-        "id": "9fb9b44d-0c61-41f7-b1d7-12101a912dd9",
-        "username": "Jerry",
-        "age": 3,
-        "hobbies": ["reading", "cooking"],
-    },
+    // {
+    //     "id": "71bd1176-0be0-4a02-b559-e5b661320470",
+    //     "username": "Tom",
+    //     "age": 5,
+    //     "hobbies": ["cycling", "fishing"],
+    // },
+    // {
+    //     "id": "9fb9b44d-0c61-41f7-b1d7-12101a912dd9",
+    //     "username": "Jerry",
+    //     "age": 3,
+    //     "hobbies": ["reading", "cooking"],
+    // },
 ]
 
 

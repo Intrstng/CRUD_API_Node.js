@@ -11,7 +11,9 @@
 		"start:dev": "ts-node-dev ./src/index.ts",
 		"start:prod": "webpack --mode production --env entry=./src/index.ts && node dist/bundle.js",
 		"lint": "eslint --ignore-path .eslintignore --ext .js,.ts",
-		"format": "prettier --ignore-path .prettierignore --write \"**/*.+(js|ts|json)\""
+		"format": "prettier --ignore-path .prettierignore --write \"**/*.+(js|ts|json)\"",
+		"test": "jest --silent",
+		"test:verbose": "jest --verbose"
 	},
 	"devDependencies": {
 		"@types/jest": "^29.5.12",
