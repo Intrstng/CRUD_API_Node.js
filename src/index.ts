@@ -41,15 +41,19 @@ export function runServer(port: number) {
                             await apiInterface.updateUserByID(id);
                         } catch (error) {
 if ((error as UncorrectPropertiesError).code === StatusCode.BadRequest) {
-    res.writeHead(StatusCode.BadRequest, {'Content-Type': 'application/json'});
-    res.end(JSON.stringify({message: (error as Error).message}));
+    await apiInterface.handleUniversalError(StatusCode.BadRequest, { message: (error as Error).message });
+    // res.writeHead(StatusCode.BadRequest, {'Content-Type': 'application/json'});
+    // res.end(JSON.stringify({message: (error as Error).message}));
+
 } else if ((error as Error404).code === StatusCode.NotFound) {
-    res.writeHead(StatusCode.NotFound, {'Content-Type': 'application/json'});
-    res.end(JSON.stringify({message: (error as Error).message}));
+    await apiInterface.handleUniversalError(StatusCode.NotFound, { message: (error as Error).message });
+
+    // res.writeHead(StatusCode.NotFound, {'Content-Type': 'application/json'});
+    // res.end(JSON.stringify({message: (error as Error).message}));
 }
-// await apiInterface.handleNotFoundError(error);
-// res.writeHead(StatusCode.BadRequest, {'Content-Type': 'application/json'});
-// res.end(JSON.stringify({message: (error as Error).message}));
+        // await apiInterface.handleNotFoundError(error);
+        // res.writeHead(StatusCode.BadRequest, {'Content-Type': 'application/json'});
+        // res.end(JSON.stringify({message: (error as Error).message}));
                         }
                         break;
                     default:
@@ -66,8 +70,9 @@ if ((error as UncorrectPropertiesError).code === StatusCode.BadRequest) {
                         try {
                             await apiInterface.createNewUser();
                         } catch (error) {
-                            res.writeHead(StatusCode.BadRequest, {'Content-Type': 'application/json'});
-                            res.end(JSON.stringify({message: (error as Error).message}));
+await apiInterface.handleUniversalError(StatusCode.BadRequest, { message: (error as Error).message });
+// res.writeHead(StatusCode.BadRequest, {'Content-Type': 'application/json'});
+// res.end(JSON.stringify({message: (error as Error).message}));
                         }
                         break;
                     default:
@@ -76,8 +81,9 @@ if ((error as UncorrectPropertiesError).code === StatusCode.BadRequest) {
             }
             // No route present
             else {
-                res.writeHead(StatusCode.NotFound, {'Content-Type': 'application/json'});
-                res.end(JSON.stringify({message: new Error404(`Route not found: ${req.url}`).message}));
+await apiInterface.handleUniversalError(StatusCode.NotFound, { message: new Error404(`Route not found: ${req.url}`).message });
+// res.writeHead(StatusCode.NotFound, {'Content-Type': 'application/json'});
+// res.end(JSON.stringify({message: new Error404(`Route not found: ${req.url}`).message}));
             }
         } catch (error) {
             // Send a 500 response

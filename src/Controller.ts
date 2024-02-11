@@ -2,6 +2,7 @@ import { v4, validate } from 'uuid';
 import { Error400, StatusCode, UserNotFoundError } from './errors';
 import { IncomingMessage, ServerResponse } from 'http';
 import { UserDataType, UserType } from './data';
+import { ErrorMessageType } from './data';
 import { IController } from './data';
 import { getReqData, newUserPropertiesValidation } from './utils/utils';
 
@@ -40,6 +41,11 @@ export class Controller implements IController {
     async handleSuccessRequest(users: UserType): Promise<void> {
         this.res.writeHead(StatusCode.OK, { 'Content-Type': 'application/json' });
         this.res.end(JSON.stringify(users));
+    }
+
+    async handleUniversalError(code: StatusCode, errMessage: ErrorMessageType): Promise<void> {
+        this.res.writeHead(code, {'Content-Type': 'application/json'});
+        this.res.end(JSON.stringify(errMessage));
     }
 
     async getUsers(): Promise<void> {
@@ -83,8 +89,8 @@ export class Controller implements IController {
         try {
             newUserPropertiesValidation(newUserData);
             let newUser: UserType = {
-                id: v4(),
-                ...newUserData
+                ...newUserData,
+                id: v4()
             }
             data = [...data, newUser];
             this.res.writeHead(StatusCode.Created, { 'Content-Type': 'application/json' });
@@ -104,7 +110,7 @@ export class Controller implements IController {
         if (!user) {
             throw new UserNotFoundError(id);
         }
-        const updatedUser = { id, ...userUpdatedData };
+        const updatedUser = { ...userUpdatedData, id };
         newUserPropertiesValidation(updatedUser);
         data = data.map((u: UserType) => u.id === id ? updatedUser : u);
         await this.handleSuccessRequest(updatedUser);
