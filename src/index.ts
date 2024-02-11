@@ -1,33 +1,29 @@
 import { createServer, ServerResponse, IncomingMessage } from 'http';
-const Controller = require('./controller');
-const { getReqData } = require('./utils');
-import { validate } from 'uuid';
-import {StatusCode, HTTPError, Error400, Error404, UserNotFoundError, InternalError} from './errors';
-import dotenv from "dotenv";
-const MethodsAPI = require('./methods');
-dotenv.config();
+import { Error404, InternalError, StatusCode } from './errors';
+const Controller = require('./Controller');
+import dotenv from 'dotenv';
 
+
+dotenv.config();
 
 const PORT = parseInt(process.env.PORT || '5000');
 
 // Create a local server to receive data from
 const server = createServer(async(req: IncomingMessage, res: ServerResponse) => {
     try {
-        const apiInterface = new MethodsAPI(req, res);
+        const apiInterface = new Controller(req, res);
 
         const isCurrentUser = req.url && req.url.match(/\/api\/users\/([0-9a-fA-F-]+)/);
 
         if (isCurrentUser) {
             const id = req.url!.split('/')[3];
-
             switch (req.method) {
                 // GET - /api/users/:id
                 case ('GET'):
                     try {
                         await apiInterface.getUsersByID(id);
                     } catch (user) {
-                        res.writeHead(StatusCode.NotFound, {'Content-Type': 'application/json'});
-                        res.end(JSON.stringify({message: (user as Error).message}));
+                        await apiInterface.handleNotFoundError(user);
                     }
                     break;
                 // DELETE - /api/users/:id
@@ -35,8 +31,7 @@ const server = createServer(async(req: IncomingMessage, res: ServerResponse) => 
                     try {
                         await apiInterface.deleteUserByID(id);
                     } catch (actionDelete) {
-                        res.writeHead(StatusCode.NotFound, {'Content-Type': 'application/json'});
-                        res.end(JSON.stringify({message: (actionDelete as Error).message}));
+                        await apiInterface.handleNotFoundError(actionDelete);
                     }
                     break;
                 // UPDATE - /api/users/:id
@@ -44,10 +39,11 @@ const server = createServer(async(req: IncomingMessage, res: ServerResponse) => 
                     try {
                         await apiInterface.updateUserByID(id);
                     } catch (error) {
-                        res.writeHead(StatusCode.NotFound, {'Content-Type': 'application/json'});
-                        res.end(JSON.stringify({message: (error as Error).message}));
+                        await apiInterface.handleNotFoundError(error);
                     }
                     break;
+                default:
+                    await apiInterface.handleBadRequestError('This API method is not available. Check API method or path in URL.');
             }
         } else if (req.url === '/api/users') {
             switch (req.method) {
@@ -58,12 +54,14 @@ const server = createServer(async(req: IncomingMessage, res: ServerResponse) => 
                 // POST - /api/users/
                 case ('POST'):
                     try {
-                        await apiInterface.postNewUser();
+                        await apiInterface.createNewUser();
                     } catch (error) {
                         res.writeHead(StatusCode.BadRequest, {'Content-Type': 'application/json'});
                         res.end(JSON.stringify({message: (error as Error).message}));
                     }
                     break;
+                default:
+                    await apiInterface.handleBadRequestError('This API method is not available. Check API method or path in URL.');
             }
         }
         // No route present
@@ -76,10 +74,6 @@ const server = createServer(async(req: IncomingMessage, res: ServerResponse) => 
         res.writeHead(StatusCode.InternalServerError, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({message: new InternalError()!.message}));
     }
-});
-
-server.on('error', (error: Error) => {
-    console.log(`The server suddenly stopped working: ${(error as Error).message}`);
 });
 
 
