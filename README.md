@@ -66,7 +66,7 @@ npm run clean:multi
 
 ## Before running the tests, make sure that all previous runs of the application are closed, especially other tests that were run previously.
 
-### To test 500 Internal Server Error you can uncomment code in **Controller.js** and send request MANUALLY (in Postman for example).
+### To test 500 Internal Server Error you can uncomment code in **Controller.js** and send request manually (in Postman for example).
 ```
 // // You can uncomment this code to test the handling of 500 Internal Server Error
 // throw new Error('Test: you simulated error 500 Internal Server Error');
@@ -81,7 +81,8 @@ Coverage reports of code (coverage collection) you can find after running tests 
 
 ### Type of USER record for API requests (JSON)
 
-`{
+```sh
+{
 
 "username": "Spike",
 
@@ -89,7 +90,9 @@ Coverage reports of code (coverage collection) you can find after running tests 
 
 "hobbies": ["seafaring", "hunting"]
 
-}`
+}
+```
+
 - **id** — unique identifier (string, uuid) **will be generated on server side**
 - **username** — user's name (string, **required**)
 - **age** — user's age (number, **required**)
@@ -104,7 +107,8 @@ Provide a valid user uuii ID that already exists in the database.
 **POST** `api/users`
 Use following type of body:
 
-`{
+```sh
+{
 
 "username": "Spike",
 
@@ -112,13 +116,15 @@ Use following type of body:
 
 "hobbies": ["seafaring", "hunting"]
 
-}`
+}
+```
 
 **PUT** `api/users/{userId}`
 Provide a valid user uuii ID that already exists in the database.
 Use following type of body:
 
-`{
+```sh
+{
 
 "username": "Anna",
 
@@ -126,7 +132,8 @@ Use following type of body:
 
 "hobbies": ["cooking", "gardening", "dancing"]
 
-}`
+}
+```
 
 **DELETE** `api/users/{userId}`
 Provide a valid user uuii ID that already exists in the database.
