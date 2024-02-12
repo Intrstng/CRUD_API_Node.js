@@ -37,7 +37,7 @@ export class Error404 extends HTTPError {
     }
 }
 
-// InternalServerError
+// 500 Internal Server Error
 export class InternalError extends Error {
     code: StatusCode = StatusCode.InternalServerError;
     description: string = 'The server encountered an unexpected condition that prevented it from fulfilling the request. DESCRIPTION:';

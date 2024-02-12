@@ -8,13 +8,14 @@
 	"license": "ISC",
 	"scripts": {
 		"clean": "rm dist/bundle.js",
+		"clean:multi": "rm dist/multi/bundle.js",
 		"start:dev": "ts-node-dev ./src/index.ts",
 		"start:prod": "webpack --mode production --env entry=./src/index.ts && node dist/bundle.js",
-		"lint": "eslint --ignore-path .eslintignore --ext .js,.ts",
-		"format": "prettier --ignore-path .prettierignore --write \"**/*.+(js|ts|json)\"",
 		"test": "jest --silent",
 		"test:detectOpenHandle": "jest --detectOpenHandles",
-		"test:verbose": "jest --verbose"
+		"test:verbose": "jest --verbose",
+		"start:multi": "npx ts-node ./src/balancer.ts",
+		"start:multi:prod": "webpack --config webpack.config.multi.js --mode production --env entry=./src/balancer.ts && node dist/multi/bundle.js"
 	},
 	"devDependencies": {
 		"@types/jest": "^29.5.12",

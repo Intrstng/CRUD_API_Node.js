@@ -1,5 +1,4 @@
 import {UserType} from '../data';
-
 const request = require('supertest');
 import { validate } from 'uuid';
 import { runServer, closeServer, getPort } from '../index';
@@ -38,7 +37,7 @@ const arbitraryID = '7007884a-6df5-4c8d-b885-44fb068d578b';
 // SCENARIO #1
 describe('Scenario #1', () => {
     beforeAll(async () => {
-        runServer(TEST_PORT + 1)
+        runServer(TEST_PORT - 1)
     });
 
     afterAll((done) => {
@@ -85,7 +84,7 @@ describe('Scenario #1', () => {
 // SCENARIO #2
 describe('Scenario #2', () => {
     beforeAll(async () => {
-        runServer(TEST_PORT + 2)
+        runServer(TEST_PORT - 2)
     });
 
     afterAll((done) => {
@@ -175,7 +174,7 @@ describe('Scenario #3', () => {
     let user: UserType | null;
 
     beforeAll(async () => {
-        runServer(TEST_PORT + 3)
+        runServer(TEST_PORT - 3)
     });
 
     afterAll((done) => {

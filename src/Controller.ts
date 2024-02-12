@@ -7,6 +7,7 @@ import { IController } from './data';
 import { getReqData, newUserPropertiesValidation } from './utils/utils';
 
 let data: UserDataType = [
+    // // You can uncomment this code to test the server
     // {
     //     "id": "71bd1176-0be0-4a02-b559-e5b661320470",
     //     "username": "Tom",
@@ -26,7 +27,8 @@ export class Controller implements IController {
     constructor(public req: IncomingMessage, public res: ServerResponse) {
         this.req = req
         this.res = res
-        //throw new Error('Test: you simulated error 500 Internal Server Error');
+        // // You can uncomment this code to test the handling of 500 Internal Server Error
+        // throw new Error('Test: you simulated error 500 Internal Server Error');
     }
 
     async handleBadRequestError(id: string): Promise<void> {
@@ -50,7 +52,6 @@ export class Controller implements IController {
     }
 
     async getUsers(): Promise<void> {
-        //throw new Error('Test: you simulated error 500 Internal Server Error');
         new Promise((resolve, _) => resolve(data))
             .then(users => {
                 this.res.writeHead(StatusCode.OK, { 'Content-Type': 'application/json' });
