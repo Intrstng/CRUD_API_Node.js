@@ -1,22 +1,55 @@
 {
-  "name": "crud-api-project",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "keywords": [],
-  "author": "Andrei Babich",
-  "license": "ISC",
-  "scripts": {
-    "clean": "rm dist/bundle.js",
-    "dev": "webpack --mode development",
-    "prod": "webpack --mode production"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "webpack": "^5.90.1",
-    "webpack-cli": "^5.1.4",
-    "typescript": "^5.3.3",
-    "ts-loader": "^9.5.1",
-    "prettier": "^3.2.5"
-  }
+	"name": "crud-api-project",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"keywords": [],
+	"author": "Andrei Babich",
+	"license": "ISC",
+	"engines": {
+		"node": ">=20.0.0"
+	},
+	"scripts": {
+		"clean": "rm dist/bundle.js",
+		"clean:multi": "rm dist/multi/bundle.js",
+		"start:dev": "ts-node-dev ./src/index.ts",
+		"start:prod": "webpack --mode production --env entry=./src/index.ts && node dist/bundle.js",
+		"test": "jest --silent",
+		"test:detectOpenHandle": "jest --detectOpenHandles",
+		"test:verbose": "jest --verbose",
+		"start:multi": "npx ts-node ./src/balancer.ts",
+		"start:multi:prod": "webpack --config webpack.config.multi.js --mode production --env entry=./src/balancer.ts && node dist/multi/bundle.js"
+	},
+	"devDependencies": {
+		"@types/jest": "^29.5.12",
+		"@types/node": "^20.11.17",
+		"@types/supertest": "^6.0.2",
+		"@types/uuid": "^9.0.8",
+		"@typescript-eslint/eslint-plugin": "^6.21.0",
+		"@typescript-eslint/parser": "^6.21.0",
+		"eslint": "^8.56.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-config-standard-with-typescript": "^43.0.1",
+		"eslint-plugin-import": "^2.29.1",
+		"eslint-plugin-n": "^16.6.2",
+		"eslint-plugin-promise": "^6.1.1",
+		"jest": "^29.7.0",
+		"jest-cli": "^29.7.0",
+		"jest-extended": "^4.0.2",
+		"nodemon": "^3.0.3",
+		"prettier": "^3.2.5",
+		"supertest": "^6.3.4",
+		"ts-jest": "^29.1.2",
+		"ts-loader": "^9.5.1",
+		"ts-node": "^10.9.2",
+		"ts-node-dev": "^2.0.0",
+		"typescript": "^5.3.3",
+		"webpack": "^5.90.1",
+		"webpack-cli": "^5.1.4"
+	},
+	"dependencies": {
+		"cross-env": "^7.0.3",
+		"dotenv": "^16.4.1",
+		"uuid": "^9.0.1"
+	}
 }
