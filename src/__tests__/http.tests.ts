@@ -123,18 +123,6 @@ describe('Scenario #2', () => {
         expect(response.body.message).toContain(`The server can not find the requested resource. DESCRIPTION: User with this ID not found: ${someValidUIID_ID}`);
     });
 
-    test('POST request of USER record with empty body.', async () => {
-        const response = await request(BASE_URL).post('api/users').send({});
-        expect(response.statusCode).toBe(400);
-        expect(response.body.message).toBe('Check these object properties for correctness: username age hobbies');
-    });
-
-    test('POST request of USER record with broken body.', async () => {
-        const response = await request(BASE_URL).post('api/users').send();
-        expect(response.statusCode).toBe(400);
-        expect(response.body.message).toBe('Bad Request: body parsing error.');
-    });
-
     test('POST request with incorrect properties of USER record.', async () => {
         const response = await request(BASE_URL).post('api/users').send(invalidUserRecord);
         expect(response.statusCode).toBe(400);
@@ -220,7 +208,7 @@ describe('Scenario #3', () => {
         expect(response.body.length).toBe(3);
     });
 
-    test ('Post request to create new USER record with a POST api/users request and try to provide a valid UUID as part of the body', async () => {
+    test ('POST request to create new USER record with a POST api/users request and try to provide a valid UUID as part of the body', async () => {
         const response = await request(BASE_URL).post('api/users').send({ ...testUser_1, id: someValidUIID_ID });
         expect(response.statusCode).toBe(201);
         expect(response.body).toMatchObject(testUser_1);
@@ -229,10 +217,54 @@ describe('Scenario #3', () => {
         expect(response.body.id).not.toBe(someValidUIID_ID);
     });
 
-    test ('Post request to update created USER record with a PUT api/users/{userID} request and try to provide valid UUID as a part of body', async () => {
+    test ('PUT request to update created USER record with a PUT api/users/{userID} request and try to provide valid UUID as a part of the body', async () => {
         const response = await request(BASE_URL).put(`api/users/${user?.id}`).send({ ...testUser_2, id: someValidUIID_ID });
         expect(response.statusCode).toBe(200);
         expect(response.body).toMatchObject(testUser_2);
         expect(response.body.id).toBe(user?.id);
+    });
+
+    test ('PUT request to update the created USER record with a PUT api/users/{userID} - expecting a response containing an updated object with the same ID', async () => {
+        const response = await request(BASE_URL).put(`api/users/${user?.id}`).send(testUser_2);
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toMatchObject(testUser_2);
+        expect(response.body.id).toBe(user?.id);
+        expect(response.body).toStrictEqual({ ...testUser_2, id: user?.id });
+    });
+
+    test('POST request of USER record with empty USER record in body.', async () => {
+        const response = await request(BASE_URL).post('api/users').send({});
+        expect(response.statusCode).toBe(400);
+        expect(response.body.message).toBe('Check these object properties for correctness: username age hobbies');
+    });
+
+    test('POST request of USER record with empty body.', async () => {
+        const response = await request(BASE_URL).post('api/users').send();
+        expect(response.statusCode).toBe(400);
+        expect(response.body.message).toBe('Bad Request: body parsing error.');
+    });
+
+    test('POST request of USER record with broken body.', async () => {
+        const response = await request(BASE_URL).post('api/users').send('this-body-is-broken');
+        expect(response.statusCode).toBe(400);
+        expect(response.body.message).toBe('Bad Request: body parsing error.');
+    });
+
+    test('PUT request of USER record with empty USER record in body.', async () => {
+        const response = await request(BASE_URL).put(`api/users/${user?.id}`).send({});
+        expect(response.statusCode).toBe(400);
+        expect(response.body.message).toBe('Check these object properties for correctness: username age hobbies');
+    });
+
+    test('PUT request of USER record with empty body.', async () => {
+        const response = await request(BASE_URL).put(`api/users/${user?.id}`).send();
+        expect(response.statusCode).toBe(400);
+        expect(response.body.message).toBe('Bad Request: body parsing error.');
+    });
+
+    test('PUT request of USER record with broken body.', async () => {
+        const response = await request(BASE_URL).put(`api/users/${user?.id}`).send('this-body-is-broken');
+        expect(response.statusCode).toBe(400);
+        expect(response.body.message).toBe('Bad Request: body parsing error.');
     });
 })

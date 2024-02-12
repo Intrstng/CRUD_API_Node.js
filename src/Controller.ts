@@ -26,6 +26,7 @@ export class Controller implements IController {
     constructor(public req: IncomingMessage, public res: ServerResponse) {
         this.req = req
         this.res = res
+        //throw new Error('Test: you simulated error 500 Internal Server Error');
     }
 
     async handleBadRequestError(id: string): Promise<void> {
@@ -38,8 +39,8 @@ export class Controller implements IController {
         this.res.end(JSON.stringify({message: error.message}));
     }
 
-    async handleSuccessRequest(users: UserType): Promise<void> {
-        this.res.writeHead(StatusCode.OK, { 'Content-Type': 'application/json' });
+    async handleSuccessRequest(code: StatusCode, users: UserType): Promise<void> {
+        this.res.writeHead(code, { 'Content-Type': 'application/json' });
         this.res.end(JSON.stringify(users));
     }
 
@@ -49,7 +50,7 @@ export class Controller implements IController {
     }
 
     async getUsers(): Promise<void> {
-        // throw new Error('Test: you simulated error 500 Internal Server Error');
+        //throw new Error('Test: you simulated error 500 Internal Server Error');
         new Promise((resolve, _) => resolve(data))
             .then(users => {
                 this.res.writeHead(StatusCode.OK, { 'Content-Type': 'application/json' });
@@ -64,7 +65,7 @@ export class Controller implements IController {
         }
         let user: UserType | undefined = data.find((u: UserType) => u.id === id);
         if (user) {
-            await this.handleSuccessRequest(user);
+            await this.handleSuccessRequest(StatusCode.OK, user);
         } else {
             throw new UserNotFoundError(id);
         }
@@ -93,8 +94,7 @@ export class Controller implements IController {
                 id: v4()
             }
             data = [...data, newUser];
-            this.res.writeHead(StatusCode.Created, { 'Content-Type': 'application/json' });
-            this.res.end(JSON.stringify(newUser));
+            await this.handleSuccessRequest(StatusCode.Created, newUser);
         } catch (error) {
             throw error;
         }
@@ -113,7 +113,7 @@ export class Controller implements IController {
         const updatedUser = { ...userUpdatedData, id };
         newUserPropertiesValidation(updatedUser);
         data = data.map((u: UserType) => u.id === id ? updatedUser : u);
-        await this.handleSuccessRequest(updatedUser);
+        await this.handleSuccessRequest(StatusCode.OK, updatedUser);
     }
 }
 

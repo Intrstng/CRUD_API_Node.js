@@ -1,5 +1,6 @@
 import { createServer, ServerResponse, IncomingMessage, Server } from 'http';
-import {Error400, Error404, InternalError, StatusCode, UncorrectPropertiesError} from './errors';
+import { Error404, InternalError, StatusCode, UncorrectPropertiesError } from './errors';
+
 const Controller = require('./Controller');
 import dotenv from 'dotenv';
 
@@ -11,8 +12,7 @@ let server: Server;
 
 
 export function runServer(port: number) {
-    // Create a local server to receive data from
-    server = createServer(async(req: IncomingMessage, res: ServerResponse) => {
+    server = createServer(async (req: IncomingMessage, res: ServerResponse) => {
         try {
             const apiInterface = new Controller(req, res);
             const isCurrentUser = req.url && req.url.match(/\/api\/users\/([0-9a-fA-F-]+)/);
@@ -23,16 +23,16 @@ export function runServer(port: number) {
                     case ('GET'):
                         try {
                             await apiInterface.getUsersByID(id);
-                        } catch (user) {
-                            await apiInterface.handleNotFoundError(user);
+                        } catch (error) {
+                            await apiInterface.handleNotFoundError(error);
                         }
                         break;
                     // DELETE - /api/users/:id
                     case ('DELETE'):
                         try {
                             await apiInterface.deleteUserByID(id);
-                        } catch (actionDelete) {
-                            await apiInterface.handleNotFoundError(actionDelete);
+                        } catch (error) {
+                            await apiInterface.handleNotFoundError(error);
                         }
                         break;
                     // UPDATE - /api/users/:id
@@ -40,20 +40,11 @@ export function runServer(port: number) {
                         try {
                             await apiInterface.updateUserByID(id);
                         } catch (error) {
-if ((error as UncorrectPropertiesError).code === StatusCode.BadRequest) {
-    await apiInterface.handleUniversalError(StatusCode.BadRequest, { message: (error as Error).message });
-    // res.writeHead(StatusCode.BadRequest, {'Content-Type': 'application/json'});
-    // res.end(JSON.stringify({message: (error as Error).message}));
-
-} else if ((error as Error404).code === StatusCode.NotFound) {
-    await apiInterface.handleUniversalError(StatusCode.NotFound, { message: (error as Error).message });
-
-    // res.writeHead(StatusCode.NotFound, {'Content-Type': 'application/json'});
-    // res.end(JSON.stringify({message: (error as Error).message}));
-}
-        // await apiInterface.handleNotFoundError(error);
-        // res.writeHead(StatusCode.BadRequest, {'Content-Type': 'application/json'});
-        // res.end(JSON.stringify({message: (error as Error).message}));
+                            if ((error as UncorrectPropertiesError).code === StatusCode.BadRequest) {
+                                await apiInterface.handleUniversalError(StatusCode.BadRequest, {message: (error as Error).message});
+                            } else if ((error as Error404).code === StatusCode.NotFound) {
+                                await apiInterface.handleNotFoundError(error);
+                            }
                         }
                         break;
                     default:
@@ -70,9 +61,7 @@ if ((error as UncorrectPropertiesError).code === StatusCode.BadRequest) {
                         try {
                             await apiInterface.createNewUser();
                         } catch (error) {
-await apiInterface.handleUniversalError(StatusCode.BadRequest, { message: (error as Error).message });
-// res.writeHead(StatusCode.BadRequest, {'Content-Type': 'application/json'});
-// res.end(JSON.stringify({message: (error as Error).message}));
+                            await apiInterface.handleUniversalError(StatusCode.BadRequest, {message: (error as Error).message});
                         }
                         break;
                     default:
@@ -81,13 +70,11 @@ await apiInterface.handleUniversalError(StatusCode.BadRequest, { message: (error
             }
             // No route present
             else {
-await apiInterface.handleUniversalError(StatusCode.NotFound, { message: new Error404(`Route not found: ${req.url}`).message });
-// res.writeHead(StatusCode.NotFound, {'Content-Type': 'application/json'});
-// res.end(JSON.stringify({message: new Error404(`Route not found: ${req.url}`).message}));
+                await apiInterface.handleUniversalError(StatusCode.NotFound, {message: new Error404(`Route not found: ${req.url}`).message});
             }
         } catch (error) {
             // Send a 500 response
-            res.writeHead(StatusCode.InternalServerError, { 'Content-Type': 'application/json' });
+            res.writeHead(StatusCode.InternalServerError, {'Content-Type': 'application/json'});
             res.end(JSON.stringify({message: new InternalError()!.message}));
         }
     });

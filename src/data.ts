@@ -19,7 +19,7 @@ export interface IController {
     res: ServerResponse
     handleBadRequestError(id: string): Promise<void>
     handleNotFoundError(error: Error): Promise<void>
-    handleSuccessRequest(users: UserType): Promise<void>
+    handleSuccessRequest(code: StatusCode, users: UserType): Promise<void>
     handleUniversalError(code: StatusCode, errMessage: ErrorMessageType): Promise<void>
     getUsers(): Promise<void>
     getUsersByID(id: string): Promise<void>
