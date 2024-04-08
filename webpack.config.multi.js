@@ -9,7 +9,7 @@ module.exports = (env, options) => {
         target: 'node',
         // watch: !isProduction,
         output: {
-            path: path.resolve(__dirname, 'dist'),
+            path: path.resolve(__dirname, 'dist/multi'),
             filename: 'bundle.js',
             clean: true,
         },

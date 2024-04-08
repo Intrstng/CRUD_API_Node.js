@@ -1,16 +1,21 @@
 {
-    "compilerOptions": {
-        "outDir": "./dist/",
-        "sourceMap": true,
-        "strict": true,
-        "noImplicitReturns": true,
-        "noImplicitAny": true,
-        "module": "es6", //"CommonJS"
-        "moduleResolution": "node",
-        "target": "es5", //"es2016"
-        "allowJs": true,
-    },
-    "include": [
-        "./src/**/*"
-    ]
+	"compilerOptions": {
+		"target": "es2019",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"sourceMap": true,
+		"declaration": false,
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"esModuleInterop": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"skipLibCheck": true
+	},
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"node_modules"
+	]
 }
