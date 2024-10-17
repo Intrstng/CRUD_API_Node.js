@@ -25,25 +25,25 @@ const testUserNotFilledCorrectly = {
 }
 
 let testUserID = '';
-const TEST_PORT = getPort();
+const TEST_PORT = getPort() - 1;
 const BASE_URL = `http://localhost:${TEST_PORT}/`;
 
 const someValidUIID_ID = '9fb9b44d-0c61-41f7-b1d7-12101a912dd9';
 const invalidUIIDFormat = '9fb9b44d-0c61-41f7-b1d7-12101a912dd';
 const arbitraryID = '7007884a-6df5-4c8d-b885-44fb068d578b';
 
+beforeAll(async () => {
+    await closeServer();
+    await runServer(TEST_PORT)
+});
+
+afterAll(async () => {
+    await closeServer();
+});
 
 // TESTS
 // SCENARIO #1
 describe('Scenario #1', () => {
-    beforeAll(async () => {
-        runServer(TEST_PORT - 1)
-    });
-
-    afterAll((done) => {
-        closeServer();
-        done();
-    });
     test('Get all USERS records using GET api/users (expecting an empty array).', async () => {
         const response = await request(BASE_URL).get('api/users');
         expect(response.statusCode).toBe(200);
@@ -83,14 +83,6 @@ describe('Scenario #1', () => {
 
 // SCENARIO #2
 describe('Scenario #2', () => {
-    beforeAll(async () => {
-        runServer(TEST_PORT - 2)
-    });
-
-    afterAll((done) => {
-        closeServer();
-        done();
-    });
     test('Request with unsupported HTTP method.', async () => {
         const response = await request(BASE_URL).patch('api/users');
         expect(response.statusCode).toBe(400);
@@ -172,15 +164,6 @@ describe('Scenario #2', () => {
 // SCENARIO #3
 describe('Scenario #3', () => {
     let user: UserType | null;
-
-    beforeAll(async () => {
-        runServer(TEST_PORT - 3)
-    });
-
-    afterAll((done) => {
-        closeServer();
-        done();
-    });
 
     test ('POST request to create a new USER record using the POST api/users request - FOR USE IN THE FOLLOWING TESTS.', async () => {
         const response = await request(BASE_URL).post('api/users').send(testUser_1);

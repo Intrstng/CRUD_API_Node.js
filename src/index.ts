@@ -14,13 +14,15 @@ export function runServer(port: number) {
     server.on('error', (error: Error) => {
         console.log(`The server suddenly stopped working: ${(error as Error).message}`);
     });
-    server.listen(PORT, () => console.log(`Server listening on port: ${PORT}`));
+    server.listen(port, () => console.log(`Server listening on port: ${port}`));
 }
 runServer(PORT);
 
 
 export function closeServer() {
-    server.close();
+    if (server) {
+        server.close();
+    }
 }
 
 export function getPort() {

@@ -7,17 +7,17 @@
 	"author": "Andrei Babich",
 	"license": "ISC",
 	"engines": {
-		"node": ">=20.0.0"
+		"node": ">=22.9.0"
 	},
 	"scripts": {
 		"clean": "rm dist/bundle.js",
 		"clean:multi": "rm dist/multi/bundle.js",
-		"start:dev": "ts-node-dev ./src/index.ts",
+		"start:dev": "nodemon --exec ts-node ./src/index.ts",
 		"start:prod": "webpack --mode production --env entry=./src/index.ts && node dist/bundle.js",
 		"test": "jest --silent",
 		"test:detectOpenHandle": "jest --detectOpenHandles",
 		"test:verbose": "jest --verbose",
-		"start:multi": "npx ts-node ./src/balancer.ts",
+		"start:multi": "nodemon --exec ts-node ./src/balancer.ts",
 		"start:multi:prod": "webpack --config webpack.config.multi.js --mode production --env entry=./src/balancer.ts && node dist/multi/bundle.js"
 	},
 	"devDependencies": {
