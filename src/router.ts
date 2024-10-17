@@ -1,11 +1,14 @@
 import {IncomingMessage, RequestListener, ServerResponse} from 'http';
 import {Error404, InternalError, StatusCode, UncorrectPropertiesError} from './errors';
+import InMemoryDatabase from './dataBase';
 const Controller = require('./Controller');
 
 
+const db = InMemoryDatabase.getInstance();
+
 export const routes: RequestListener = async (req: IncomingMessage, res: ServerResponse) => {
     try {
-        const apiInterface = new Controller(req, res);
+        const apiInterface = new Controller(req, res, db);
         const isCurrentUser = req.url && req.url.match(/\/api\/users\/([0-9a-fA-F-]+)/);
         if (isCurrentUser) {
             const id = req.url!.split('/')[3];

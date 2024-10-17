@@ -8,7 +8,13 @@ export type UserType = {
     hobbies: string[];
 };
 
-export type UserDataType = UserType[];
+export interface InMemoryDatabaseInterface {
+    getAll(): UserType[];
+    getItem(id: string): UserType | null;
+    deleteItem(id: string): UserType | null;
+    createItem(item: Omit<UserType, 'id'>): UserType;
+    updateItem(id: string, item: Partial<Omit<UserType, 'id'>>): UserType | null;
+}
 
 export type ErrorMessageType = {
     message: string
