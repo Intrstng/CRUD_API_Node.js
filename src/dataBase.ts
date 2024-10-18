@@ -41,7 +41,7 @@ class InMemoryDatabase implements InMemoryDatabaseInterface {
     if (!this.data[id]) {
       return null;
     }
-    this.data[id] = { ...this.data[id], ...item };
+    this.data[id] = { ...this.data[id], ...item, id: this.data[id].id};
     return this.data[id];
   }
 }
