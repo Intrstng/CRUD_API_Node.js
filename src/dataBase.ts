@@ -14,35 +14,47 @@ class InMemoryDatabase implements InMemoryDatabaseInterface {
     return InMemoryDatabase.instance;
   }
 
-  public getAll(): UserType[] {
-    return Object.values(this.data);
+  public getAll(): Promise<UserType[]> {
+    return new Promise((resolve) => {
+      resolve(Object.values(this.data));
+    });
   }
 
-  public getItem(id: string): UserType | null {
-    return this.data[id] || null;
+  public getItem(id: string): Promise<UserType | null> {
+    return new Promise((resolve) => {
+      resolve(this.data[id] || null);
+    });
   }
 
-  public deleteItem(id: string): UserType | null {
-    if (!this.data[id]) {
-      return null;
-    }
-    const deletedItem = this.data[id];
-    delete this.data[id];
-    return deletedItem;
+  public deleteItem(id: string): Promise<UserType | null> {
+    return new Promise((resolve) => {
+      if (!this.data[id]) {
+        resolve(null);
+      } else {
+        const deletedItem = this.data[id];
+        delete this.data[id];
+        resolve(deletedItem);
+      }
+    });
   }
 
-  public createItem(item: Omit<UserType, 'id'>): UserType {
-    const id = v4();
-    this.data[id] = { ...item, id };
-    return this.data[id];
+  public createItem(item: Omit<UserType, 'id'>): Promise<UserType> {
+    return new Promise((resolve) => {
+      const id = v4();
+      this.data[id] = { ...item, id };
+      resolve(this.data[id]);
+    });
   }
 
-  public updateItem(id: string, item: Partial<Omit<UserType, 'id'>>): UserType | null {
-    if (!this.data[id]) {
-      return null;
-    }
-    this.data[id] = { ...this.data[id], ...item, id: this.data[id].id};
-    return this.data[id];
+  public updateItem(id: string, item: Partial<Omit<UserType, 'id'>>): Promise<UserType | null> {
+    return new Promise((resolve) => {
+      if (!this.data[id]) {
+        resolve(null);
+      } else {
+        this.data[id] = { ...this.data[id], ...item, id: this.data[id].id };
+        resolve(this.data[id]);
+      }
+    });
   }
 }
 

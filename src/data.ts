@@ -9,11 +9,11 @@ export type UserType = {
 };
 
 export interface InMemoryDatabaseInterface {
-    getAll(): UserType[];
-    getItem(id: string): UserType | null;
-    deleteItem(id: string): UserType | null;
-    createItem(item: Omit<UserType, 'id'>): UserType;
-    updateItem(id: string, item: Partial<Omit<UserType, 'id'>>): UserType | null;
+    getAll(): Promise<UserType[]>;
+    getItem(id: string): Promise<UserType | null>;
+    deleteItem(id: string): Promise<UserType | null>;
+    createItem(item: Omit<UserType, 'id'>): Promise<UserType>;
+    updateItem(id: string, item: Partial<Omit<UserType, 'id'>>): Promise<UserType | null>;
 }
 
 export type ErrorMessageType = {
@@ -25,7 +25,7 @@ export interface IController {
     res: ServerResponse
     handleBadRequestError(id: string): Promise<void>
     handleNotFoundError(error: Error): Promise<void>
-    handleSuccessRequest(code: StatusCode, users: UserType): Promise<void>
+    handleSuccessRequest<T>(code: StatusCode, users: T): Promise<void>
     handleUniversalError(code: StatusCode, errMessage: ErrorMessageType): Promise<void>
     getUsers(): Promise<void>
     getUsersByID(id: string): Promise<void>
