@@ -1,42 +1,29 @@
 import {IncomingMessage, RequestListener, ServerResponse} from 'http';
 import {Error404, InternalError, StatusCode, UncorrectPropertiesError} from './errors';
+import InMemoryDatabase from './dataBase';
 const Controller = require('./Controller');
 
 
+const db = InMemoryDatabase.getInstance();
+
 export const routes: RequestListener = async (req: IncomingMessage, res: ServerResponse) => {
     try {
-        const apiInterface = new Controller(req, res);
+        const apiInterface = new Controller(req, res, db);
         const isCurrentUser = req.url && req.url.match(/\/api\/users\/([0-9a-fA-F-]+)/);
         if (isCurrentUser) {
             const id = req.url!.split('/')[3];
             switch (req.method) {
                 // GET - /api/users/:id
                 case ('GET'):
-                    try {
-                        await apiInterface.getUsersByID(id);
-                    } catch (error) {
-                        await apiInterface.handleNotFoundError(error);
-                    }
+                    await apiInterface.getUsersByID(id);
                     break;
                 // DELETE - /api/users/:id
                 case ('DELETE'):
-                    try {
-                        await apiInterface.deleteUserByID(id);
-                    } catch (error) {
-                        await apiInterface.handleNotFoundError(error);
-                    }
+                    await apiInterface.deleteUserByID(id);
                     break;
                 // UPDATE - /api/users/:id
                 case ('PUT'):
-                    try {
-                        await apiInterface.updateUserByID(id);
-                    } catch (error) {
-                        if ((error as UncorrectPropertiesError).code === StatusCode.BadRequest) {
-                            await apiInterface.handleUniversalError(StatusCode.BadRequest, {message: (error as Error).message});
-                        } else if ((error as Error404).code === StatusCode.NotFound) {
-                            await apiInterface.handleNotFoundError(error);
-                        }
-                    }
+                    await apiInterface.updateUserByID(id);
                     break;
                 default:
                     await apiInterface.handleBadRequestError('This API method is not available. Check API method or path in URL.');
@@ -49,11 +36,7 @@ export const routes: RequestListener = async (req: IncomingMessage, res: ServerR
                     break;
                 // POST - /api/users/
                 case ('POST'):
-                    try {
-                        await apiInterface.createNewUser();
-                    } catch (error) {
-                        await apiInterface.handleUniversalError(StatusCode.BadRequest, {message: (error as Error).message});
-                    }
+                    await apiInterface.createNewUser();
                     break;
                 default:
                     await apiInterface.handleBadRequestError('This API method is not available. Check API method or path in URL.');

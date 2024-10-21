@@ -6,7 +6,7 @@ import { routes } from './router';
 import 'dotenv/config';
 
 const cpus = availableParallelism() - 1; // '-1' - to reserve one CPU for the main process
-const PORT = parseInt(process.env.PORT || '5000');
+const PORT = parseInt(process.env.CLUSTER_PORT || '6000');
 let requestStep: number = 0;
 const pid = process.pid;
 
@@ -27,7 +27,7 @@ if (cluster.isPrimary) {
 // Create a proxy server for load balancing
     const proxyServer = http.createServer((req, res) => {
         const nextPort = getRoundRobinPort(PORT); // using Round-robin algorithm
-        console.log(`Sending a request to a port: ${nextPort}`);
+        console.log(`Request: ${req.method} ${req.url} on port ${PORT}, pid: ${process.pid} >> redirected to port: ${nextPort}`);
         const url = new URL(req.url, `http://${req.headers.host}`);
         const options = {
             ...url,
